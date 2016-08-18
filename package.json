@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack -d --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "start-web": "webpack-dev-server --hot --inline --colors --progress"
   },
   "author": "Anar Rzayev",
   "license": "ISC",
