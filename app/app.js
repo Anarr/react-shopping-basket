@@ -84,26 +84,33 @@ var UserBasket = React.createClass({
 
 	render:function(){
 		var products_count = this.props.inside.length;
+		var sum = 1;
+		var total_amount=0;
+		
 		return (
 			<div className = "userbasket">
 				<h3>This is user basket ({products_count})</h3>
+
 				<ul>
 				{this.props.inside.map(function (item,i) {
-
+					sum = item.price * item.count;
+					total_amount+=sum;
 					return(
 						<div key={i}>
 							<li>{item.id}</li>
 							<li>{item.name}</li>
-							<li>{item.price}$</li>
+							<li>{sum}$</li>
 							<li>{item.count}</li>
 							<button className="btn btn-danger"><span className="glyphicon glyphicon-trash"></span></button>
 							<hr />
 						</div>
 					)
 				})}
+					<p>Total amount is: {total_amount}$</p>
 				</ul>
 			</div>
 		)
+
 	}
 });
 

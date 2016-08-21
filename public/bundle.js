@@ -151,6 +151,9 @@
 	
 		render: function render() {
 			var products_count = this.props.inside.length;
+			var sum = 1;
+			var total_amount = 0;
+	
 			return React.createElement(
 				'div',
 				{ className: 'userbasket' },
@@ -165,7 +168,8 @@
 					'ul',
 					null,
 					this.props.inside.map(function (item, i) {
-	
+						sum = item.price * item.count;
+						total_amount += sum;
 						return React.createElement(
 							'div',
 							{ key: i },
@@ -182,7 +186,7 @@
 							React.createElement(
 								'li',
 								null,
-								item.price,
+								sum,
 								'$'
 							),
 							React.createElement(
@@ -197,7 +201,14 @@
 							),
 							React.createElement('hr', null)
 						);
-					})
+					}),
+					React.createElement(
+						'p',
+						null,
+						'Total amount is: ',
+						total_amount,
+						'$'
+					)
 				)
 			);
 		}
