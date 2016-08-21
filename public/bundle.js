@@ -42,67 +42,168 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/*!***********************!*\
-  !*** ./app/index.jsx ***!
-  \***********************/
+/*!********************!*\
+  !*** ./app/app.js ***!
+  \********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var React = __webpack_require__(/*! react */ 1);
+	var ReactDOM = __webpack_require__(/*! react-dom */ 35);
+	var App = React.createClass({
+		displayName: 'App',
 	
-	var _react = __webpack_require__(/*! react */ 1);
 	
-	var _react2 = _interopRequireDefault(_react);
+		getInitialState: function getInitialState() {
+			var products = [{ id: 1, name: "mouse", price: 12 }, { id: 2, name: "keyboard", price: 25 }, { id: 3, name: "camera", price: 17 }];
+			return { products: products };
+		},
 	
-	var _reactDom = __webpack_require__(/*! react-dom */ 35);
-	
-	var _ProductList = __webpack_require__(/*! ./ProductList.jsx */ 175);
-	
-	var _ProductList2 = _interopRequireDefault(_ProductList);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var App = function (_React$Component) {
-		_inherits(App, _React$Component);
-	
-		function App() {
-			_classCallCheck(this, App);
-	
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+		render: function render() {
+			return React.createElement(
+				'div',
+				{ className: 'container' },
+				React.createElement(
+					'div',
+					{ className: 'row' },
+					React.createElement(
+						'button',
+						{ className: 'btn btn-sm btn-success' },
+						'add new product'
+					),
+					React.createElement(ProductList, { my_products: this.state.products })
+				)
+			);
 		}
+	});
 	
-		_createClass(App, [{
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
+	var ProductList = React.createClass({
+		displayName: 'ProductList',
+	
+		getInitialState: function getInitialState() {
+			return { basket: [], basket_empty: false };
+		},
+	
+		addBasket: function addBasket(item_id, item_price, item_name) {
+			var new_basket = this.state.basket;
+			var default_count = 1;
+	
+			if (!new_basket.length) {
+				new_basket.push({ id: item_id, name: item_name, price: item_price, count: default_count });
+			} else {
+				for (var i = 0; i < new_basket.length; i++) {
+					if (new_basket[i].id == item_id) {
+						new_basket[i].count += 1;
+						break;
+					} else if (i == new_basket.length - 1) {
+	
+						new_basket.push({ id: item_id, name: item_name, price: item_price, count: default_count });
+						break;
+					}
+				}
+			}
+			this.setState({ basket: new_basket, basket_empty: true });
+			// console.log(this.state.basket);
+		},
+	
+		render: function render() {
+	
+			return React.createElement(
+				'div',
+				{ className: 'col-md-8' },
+				React.createElement(
+					'h1',
+					null,
+					'Products '
+				),
+				React.createElement(
 					'div',
 					null,
-					_react2.default.createElement(
-						'h2',
-						null,
-						'Shopping Card App'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						'This page contains simple Products List(add,remove,update  basket) and give about info to u price, and result'
-					),
-					_react2.default.createElement(_ProductList2.default, null)
-				);
-			}
-		}]);
+					this.props.my_products.map(function (item, i) {
 	
-		return App;
-	}(_react2.default.Component);
+						return React.createElement(
+							'div',
+							{ key: i },
+							React.createElement(
+								'p',
+								null,
+								item.id,
+								'.',
+								item.name
+							),
+							React.createElement(
+								'button',
+								{ onClick: this.addBasket.bind(null, item.id, item.price, item.name), className: 'btn btn-primary' },
+								'add basket'
+							)
+						);
+					}.bind(this))
+				),
+				React.createElement(UserBasket, { inside: this.state.basket })
+			);
+		}
+	});
 	
-	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('example'));
+	var UserBasket = React.createClass({
+		displayName: 'UserBasket',
+	
+	
+		render: function render() {
+			var products_count = this.props.inside.length;
+			return React.createElement(
+				'div',
+				{ className: 'userbasket' },
+				React.createElement(
+					'h3',
+					null,
+					'This is user basket (',
+					products_count,
+					')'
+				),
+				React.createElement(
+					'ul',
+					null,
+					this.props.inside.map(function (item, i) {
+	
+						return React.createElement(
+							'div',
+							{ key: i },
+							React.createElement(
+								'li',
+								null,
+								item.id
+							),
+							React.createElement(
+								'li',
+								null,
+								item.name
+							),
+							React.createElement(
+								'li',
+								null,
+								item.price,
+								'$'
+							),
+							React.createElement(
+								'li',
+								null,
+								item.count
+							),
+							React.createElement(
+								'button',
+								{ className: 'btn btn-danger' },
+								React.createElement('span', { className: 'glyphicon glyphicon-trash' })
+							),
+							React.createElement('hr', null)
+						);
+					})
+				)
+			);
+		}
+	});
+	
+	ReactDOM.render(React.createElement(App, null), document.getElementById('example'));
 
 /***/ },
 /* 1 */
@@ -22031,111 +22132,6 @@
 	var ReactMount = __webpack_require__(/*! ./ReactMount */ 167);
 	
 	module.exports = ReactMount.renderSubtreeIntoContainer;
-
-/***/ },
-/* 175 */
-/*!*****************************!*\
-  !*** ./app/ProductList.jsx ***!
-  \*****************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var ProductList = function (_React$Component) {
-		_inherits(ProductList, _React$Component);
-	
-		function ProductList(props) {
-			_classCallCheck(this, ProductList);
-	
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProductList).call(this, props));
-	
-			{/*  declare our products here */}
-	
-			_this.state = { products: [{
-					name: 'Computer',
-					price: '450$',
-					count: 1
-				}, {
-					name: 'Wireless Adapter',
-					price: '45$',
-					count: 1
-				}, {
-					name: 'Keyboard',
-					price: '40$',
-					count: 1
-				}, {
-					name: 'Mouse',
-					price: '17$',
-					count: 1
-				}] };
-			return _this;
-		}
-	
-		_createClass(ProductList, [{
-			key: 'moreInfo',
-			value: function moreInfo() {
-				alert("Hey,im showing details of product");
-			}
-		}, {
-			key: 'addBasket',
-			value: function addBasket() {
-				alert("Hey im adding the items to basket :)");
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-	
-				return _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(
-						'h1',
-						null,
-						'All products'
-					),
-					_react2.default.createElement(
-						'p',
-						null,
-						this.state.products.map(function (item, i) {
-							return _react2.default.createElement(
-								'div',
-								null,
-								_react2.default.createElement(
-									'span',
-									{ key: i, className: 'my_items' },
-									item.name
-								),
-								_react2.default.createElement('button', { onClick: this.addBasket, className: 'btn btn-sm btn-success glyphicon glyphicon-shopping-cart', title: 'add basket' }),
-								_react2.default.createElement('button', { onClick: this.addBasket, className: 'btn btn-sm btn-primary glyphicon glyphicon-info-sign', title: 'more info' })
-							);
-						}.bind(this))
-					)
-				);
-			}
-		}]);
-	
-		return ProductList;
-	}(_react2.default.Component);
-	
-	exports.default = ProductList;
 
 /***/ }
 /******/ ]);
